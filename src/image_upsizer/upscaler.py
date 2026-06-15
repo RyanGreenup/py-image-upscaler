@@ -34,7 +34,7 @@ def load_model(
     *,
     device: str = "cuda",
     fp16: bool = True,
-) -> ImageModelDescriptor:
+) -> ImageModelDescriptor[torch.nn.Module]:
     """Load the Real-ESRGAN model onto the GPU in eval mode."""
     path = weights if weights is not None else ensure_weights()
     model = ModelLoader(device=device).load_from_file(str(path))
@@ -63,7 +63,7 @@ def _to_pil(tensor: torch.Tensor) -> Image.Image:
 
 
 def _tiled_forward(
-    model: ImageModelDescriptor,
+    model: ImageModelDescriptor[torch.nn.Module],
     tensor: torch.Tensor,
     *,
     tile: int = 512,
@@ -92,7 +92,7 @@ def _tiled_forward(
 
 def upscale_ai(
     img: Image.Image,
-    model: ImageModelDescriptor,
+    model: ImageModelDescriptor[torch.nn.Module],
     target_width: int,
     *,
     device: str = "cuda",
