@@ -1,0 +1,64 @@
+[project]
+name = "image-upsizer"
+version = "0.1.0"
+description = "An image upsampler"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "typer>=0.12",
+    "torch>=2.2",
+    "spandrel>=0.4",
+    "pillow>=10",
+    "numpy>=1.26",
+]
+
+[project.scripts]
+image-upsizer = "image_upsizer.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = [
+    "ruff>=0.9",
+    "pyright>=1.1.390",
+    "pytest>=8",
+    "pytest-cov>=6",
+]
+
+[tool.ruff]
+line-length = 88
+target-version = "py313"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+    "D",      # docstring rules: enable a subset if you want them
+    "COM812", # conflicts with the formatter
+    "ISC001", # conflicts with the formatter
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = ["S101", "PLR2004", "ANN"]
+
+[tool.ruff.format]
+docstring-code-format = true
+
+[tool.pyright]
+include = ["src", "tests"]
+typeCheckingMode = "strict"
+pythonVersion = "3.13"
+# torch / spandrel / PIL ship without complete type stubs; do not fail on that.
+reportMissingTypeStubs = false
+reportUnknownMemberType = false
+reportUnknownVariableType = false
+reportUnknownArgumentType = false
+
+[tool.pytest.ini_options]
+addopts = "-ra --strict-markers --strict-config --cov=src --cov-report=term-missing"
+testpaths = ["tests"]
+
+[tool.coverage.report]
+exclude_also = ["if TYPE_CHECKING:", "raise NotImplementedError"]
