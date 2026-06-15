@@ -99,3 +99,7 @@ def upscale(  # noqa: PLR0913
 def main() -> None:
     """Run the CLI application."""
     app()
+
+
+if __name__ == "__main__":
+    main()
