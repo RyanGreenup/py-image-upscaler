@@ -53,32 +53,40 @@ beyond a single 4x pass (e.g. 8K) stay within VRAM.
 
 The `justfile` wraps the common loops:
 
-| Command     | What it does                          |
-|-------------|---------------------------------------|
-| `just`      | runs `check` (fmt, lint, type, test)  |
-| `just fmt`  | `ruff format --check .`               |
-| `just lint` | `ruff check .`                        |
-| `just type` | `pyright`                             |
-| `just test` | `pytest` with coverage                |
+| Command     | What it does                         |
+| ----------- | ------------------------------------ |
+| `just`      | runs `check` (fmt, lint, type, test) |
+| `just fmt`  | `ruff format --check .`              |
+| `just lint` | `ruff check .`                       |
+| `just type` | `pyright`                            |
+| `just test` | `pytest` with coverage               |
 
 Run any underlying tool directly with `uv run <tool>` if you do not have `just`.
 
 ## Layout
 
-```
-src/image_upsizer/cli.py        Typer CLI and console entry point
-src/image_upsizer/upscaler.py   CUDA upscaling (Real-ESRGAN + bicubic, tiling)
-src/image_upsizer/weights.py    download/cache the Real-ESRGAN weights
-tests/                    pytest suite
-pyproject.toml            project + ruff + pyright + pytest + coverage config
-.pre-commit-config.yaml   ruff + uv-lock hooks
-.github/workflows/ci.yml  CI: format check, lint, typecheck, test
-```
+- `src/image_upsizer/`
+  - `cli.py` - Typer CLI and console entry point
+  - `upscaler.py` - CUDA upscaling (Real-ESRGAN + bicubic, tiling)
+  - `weights.py` - download/cache the Real-ESRGAN weights
+- `tests/` - pytest suite
+- `pyproject.toml` - project + ruff + pyright + pytest + coverage config
+- `.pre-commit-config.yaml` - ruff + uv-lock hooks
+- `.github/workflows/ci.yml` - CI: format check, lint, typecheck, test
 
 ## Notes
 
+## Contributing
+
+### Overview
+
+The project is a Python Typer CLI managed with [uv](https://docs.astral.sh/uv/),
+linted/formatted with [ruff](https://docs.astral.sh/ruff/) (`select = ["ALL"]`),
+type-checked with [pyright](https://microsoft.github.io/pyright/) in strict mode,
+and tested with pytest. The package is in `src/image_upsizer/`.
+
+### Notes
+
 - ruff is set to `select = ["ALL"]` with docstring rules (`D`) disabled by default.
-  Turn the subset you want back on in `pyproject.toml` under `[tool.ruff.lint]`.
 - Tests relax a few rules (`S101`, `PLR2004`, `ANN`) via `per-file-ignores`.
-- `uv.lock` is gitignored by default; remove it from `.gitignore` if you want to commit
-  a pinned lockfile (recommended for applications, optional for libraries).
+- `uv.lock` is git tracked by default.
